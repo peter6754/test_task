@@ -34,4 +34,24 @@ final class OrderRepository
 
         return $order;
     }
+
+    public function createWithArticles(array $order, array $articles): array
+    {
+        return $this->connection->transactional(function (Connection $connection) use ($order, $articles): array {
+            $connection->insert('orders', $order);
+
+            $orderId = (int) $connection->lastInsertId();
+
+            foreach ($articles as $article) {
+                $article['orders_id'] = $orderId;
+                $connection->insert('orders_article', $article);
+            }
+
+            return [
+                'id' => $orderId,
+                'hash' => (string) $order['hash'],
+                'token' => (string) $order['token'],
+            ];
+        });
+    }
 }
