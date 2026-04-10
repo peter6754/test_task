@@ -1,0 +1,10 @@
+services:
+    App\Tests\Double\OrderRepositoryFake:
+        public: true
+
+    App\Repository\OrderRepositoryInterface: '@App\Tests\Double\OrderRepositoryFake'
+
+    App\Tests\Double\TileExpertPriceFetcherFake:
+        public: true
+
+    App\Service\TileExpertPriceFetcherInterface: '@App\Tests\Double\TileExpertPriceFetcherFake'

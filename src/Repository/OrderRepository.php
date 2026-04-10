@@ -5,7 +5,7 @@ namespace App\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 
-final class OrderRepository
+final class OrderRepository implements OrderRepositoryInterface
 {
     private Connection $connection;
 

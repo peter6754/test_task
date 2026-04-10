@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\TileExpertPriceFetcher;
+use App\Service\TileExpertPriceFetcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PriceController extends AbstractController
 {
     #[Route('/api/price', name: 'app_api_price', methods: ['GET'])]
-    public function getPrice(Request $request, TileExpertPriceFetcher $priceFetcher): JsonResponse
+    public function getPrice(Request $request, TileExpertPriceFetcherInterface $priceFetcher): JsonResponse
     {
         $factory = trim((string) $request->query->get('factory', ''));
         $collection = trim((string) $request->query->get('collection', ''));

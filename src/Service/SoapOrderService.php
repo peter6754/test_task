@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Repository\OrderRepository;
+use App\Repository\OrderRepositoryInterface;
 use DateTimeImmutable;
 use DOMDocument;
 use DOMElement;
@@ -13,7 +13,7 @@ final class SoapOrderService
 {
     private const XML_CONTENT_TYPE = 'text/xml; charset=UTF-8';
 
-    public function __construct(private OrderRepository $orderRepository)
+    public function __construct(private OrderRepositoryInterface $orderRepository)
     {
     }
 

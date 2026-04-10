@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\OrderRepository;
+use App\Repository\OrderRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class OrderController extends AbstractController
 {
     #[Route('/api/orders/grouped', name: 'app_api_order_grouped', methods: ['GET'])]
-    public function grouped(Request $request, OrderRepository $orderRepository): JsonResponse
+    public function grouped(Request $request, OrderRepositoryInterface $orderRepository): JsonResponse
     {
         $groupBy = (string) ($request->query->get('groupBy') ?? $request->query->get('group_by') ?? 'month');
         $page = max(1, $request->query->getInt('page', 1));
@@ -31,7 +31,7 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/api/orders/{id}', name: 'app_api_order_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(int $id, OrderRepository $orderRepository): JsonResponse
+    public function show(int $id, OrderRepositoryInterface $orderRepository): JsonResponse
     {
         $order = $orderRepository->findOneWithArticles($id);
 

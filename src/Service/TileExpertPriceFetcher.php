@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-final class TileExpertPriceFetcher
+final class TileExpertPriceFetcher implements TileExpertPriceFetcherInterface
 {
     private const PRODUCT_URL_TEMPLATE = 'https://tile.expert/it/tile/%s/%s/a/%s';
 
