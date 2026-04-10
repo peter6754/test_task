@@ -1,7 +1,4 @@
-
 services:
-###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      - "${MYSQL_PORT:-3306}:3306"
