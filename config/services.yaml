@@ -22,5 +22,10 @@ services:
     App\Repository\OrderRepositoryInterface: '@App\Repository\OrderRepository'
     App\Service\TileExpertPriceFetcherInterface: '@App\Service\TileExpertPriceFetcher'
 
+    App\OpenApi\ApplicationOpenApiFactory:
+        decorates: 'api_platform.openapi.factory'
+        arguments:
+            $decorated: '@App\OpenApi\ApplicationOpenApiFactory.inner'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
