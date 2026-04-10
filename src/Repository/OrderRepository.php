@@ -54,4 +54,65 @@ final class OrderRepository
             ];
         });
     }
+
+    public function findGroupedCounts(string $groupBy, int $page, int $perPage): array
+    {
+        $format = match ($groupBy) {
+            'year' => '%Y',
+            'month' => '%Y-%m',
+            'day' => '%Y-%m-%d',
+            default => throw new \InvalidArgumentException('Unsupported groupBy value. Use day, month or year.'),
+        };
+
+        $groupExpression = sprintf("DATE_FORMAT(create_date, '%s')", $format);
+        $offset = ($page - 1) * $perPage;
+
+        $groups = $this->connection->fetchAllAssociative(
+            sprintf(
+                'SELECT %1$s AS group_value, COUNT(*) AS order_count
+                 FROM orders
+                 GROUP BY group_value
+                 ORDER BY group_value DESC
+                 LIMIT :limit OFFSET :offset',
+                $groupExpression,
+            ),
+            [
+                'limit' => $perPage,
+                'offset' => $offset,
+            ],
+            [
+                'limit' => ParameterType::INTEGER,
+                'offset' => ParameterType::INTEGER,
+            ],
+        );
+
+        $totalGroups = (int) $this->connection->fetchOne(
+            sprintf(
+                'SELECT COUNT(*) FROM (
+                    SELECT %1$s AS group_value
+                    FROM orders
+                    GROUP BY group_value
+                ) grouped_orders',
+                $groupExpression,
+            ),
+        );
+
+        $totalOrders = (int) $this->connection->fetchOne('SELECT COUNT(*) FROM orders');
+        $totalPages = max(1, (int) ceil($totalGroups / $perPage));
+
+        return [
+            'groupBy' => $groupBy,
+            'page' => $page,
+            'perPage' => $perPage,
+            'totalItems' => $totalGroups,
+            'totalOrders' => $totalOrders,
+            'totalPages' => $totalPages,
+            'hasNextPage' => $page < $totalPages,
+            'hasPreviousPage' => $page > 1,
+            'items' => array_map(static fn (array $group): array => [
+                'groupValue' => $group['group_value'],
+                'count' => (int) $group['order_count'],
+            ], $groups),
+        ];
+    }
 }
